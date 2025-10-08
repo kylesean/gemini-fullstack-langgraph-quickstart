@@ -164,3 +164,24 @@ def get_citations(response, resolved_urls_map):
                     pass
         citations.append(citation)
     return citations
+
+def format_sources(sources_gathered: list[dict]) -> str:
+    """
+    Formats the gathered sources into a markdown list for appending to the final answer.
+    """
+    if not sources_gathered:
+        return ""
+
+    # 去重
+    unique_sources = []
+    seen_urls = set()
+    for source in sources_gathered:
+        if source["value"] not in seen_urls:
+            unique_sources.append(source)
+            seen_urls.add(source["value"])
+
+    source_list_md = "\n\n---\n\n**Sources:**\n"
+    for source in unique_sources:
+        source_list_md += f"* [{source['label']}]({source['value']})\n"
+
+    return source_list_md
