@@ -1,3 +1,21 @@
+# 修改成兼容 OpenAI 的 Providers
+
+- 为了方便测试和学习 Google 基于 LangGraph 开发的这个 research agent。
+- 支持 OpenAI 兼容的模型提供商，我使用的是 DeepSeek 来测试的。
+- 由于Gemini API (通过 Google AI SDK 或 LangChain 的 ChatGoogleGenerai) 提供了一个名为 google_search 的原生工具。这和其他大模型有本质区别：
+  - Gemini 原生工具模式具有 tools: [{"google_search": {}}] 这样的工具，开发者不需要提供具体的实现。
+  - Gemini 模型收到你的请求后，它会自行判断是否需要搜索、生成搜索词、在 Google 的服务器上执行搜索、读取结果，然后将搜索结果作为上下文来生成最终的回答。
+  - API 返回的不仅是文本答案，还包含一个非常重要的结构化数据 grounding_metadata。这个元数据包含了回答中的 哪句话是基于哪个搜索结果（URL）生成的。
+  - 主要是 get_citations 和 insert_citation_markers 这两个函数的作用。
+- 使用 Tavily 搜索替换 Google 搜索，不在文中插入引用标记，而是直接在答案末尾附上引用来源列表。
+
+<img src="./app1.png" title="OpenAI Fullstack LangGraph" alt="OpenAI Fullstack LangGraph" width="90%">
+<img src="./app2.png" title="OpenAI Fullstack LangGraph" alt="OpenAI Fullstack LangGraph" width="90%">
+
+
+
+
+
 # Gemini Fullstack LangGraph Quickstart
 
 This project demonstrates a fullstack application using a React frontend and a LangGraph-powered backend agent. The agent is designed to perform comprehensive research on a user's query by dynamically generating search terms, querying the web using Google Search, reflecting on the results to identify knowledge gaps, and iteratively refining its search until it can provide a well-supported answer with citations. This application serves as an example of building research-augmented conversational AI using LangGraph and Google's Gemini models.
